@@ -1,13 +1,17 @@
 import argparse
+import numpy as np
 from pprint import pprint
 from utils import file
+from src.genalg import GeneticAlgorithm
 
 def main(args: argparse.Namespace) -> None:
     input_file = args.input_file
     
-    for instance in file.get_instance_from_file(input_file):
-        pprint(instance)
-
+    ga = GeneticAlgorithm(20, 100)
+    pprint([np.sum(a) for a in ga.population])
+    
+    # for instance in file.get_instance_from_file(input_file):
+    #     pprint(instance)
 
 
 if __name__ == '__main__':
