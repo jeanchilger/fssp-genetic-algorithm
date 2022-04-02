@@ -1,7 +1,24 @@
 import argparse
+from pprint import pprint
+from utils import file
+
+def main(args: argparse.Namespace) -> None:
+    input_file = args.input_file
+    
+    for instance in file.get_instance_from_file(input_file):
+        pprint(instance)
+
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     
-    _, args = parser.parse_known_args()
+    parser.add_argument(
+            '-i', '--input-file', type=str, default=None,
+            help='Path to the file with input instances',
+            dest='input_file')
+    
+    args, _ = parser.parse_known_args()
+    
+    main(args)
+    
