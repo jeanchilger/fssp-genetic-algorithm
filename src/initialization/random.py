@@ -1,3 +1,5 @@
+from .. import Chromosome
+
 import numpy as np
 
 def random(n_tasks: int, population_size: int) -> np.ndarray:
@@ -14,5 +16,7 @@ def random(n_tasks: int, population_size: int) -> np.ndarray:
     """
     
     return np.array([
-            np.random.choice(np.arange(1, n_tasks + 1), replace=False, size=n_tasks)
+            Chromosome(data=np.random.choice(
+                    np.arange(1, n_tasks + 1),
+                    replace=False, size=n_tasks), score=0)
             for a in range(population_size)])

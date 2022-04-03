@@ -1,4 +1,4 @@
-from ..genalg import Chromosome
+from .. import Chromosome
 
 # TODO: Refactor Code
 def makespan(instance, solution: Chromosome) -> int:

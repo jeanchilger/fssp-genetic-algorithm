@@ -1,13 +1,8 @@
 import numpy as np
-from dataclasses import dataclass
-from typing import Union
 from .initialization import INITIALIZATION_FN_MAP
-
-
-# Data class to represent a solution (chromosome)
-@dataclass
-class Chromosome:
-    data: Union[list, np.ndarray]
+from .fitness import FITNESS_FN_MAP
+from .selection import SELECTION_FN_MAP
+from . import Chromosome
 
 
 # - 1. Initialization
@@ -16,13 +11,58 @@ class Chromosome:
 # - 4. Crossover
 # - 5. Mutation
 class GeneticAlgorithm:
-    
     def __init__(
-            self, n_tasks, population_size, init_type='random', fitness_type=None, selection_type=None,
+            self, n_tasks, population_size, init_type='random',
+            fitness_type='makespan', selection_type='parent_elitism',
             crossover_type=None, mutation_type=None):
-        self._init_function = INITIALIZATION_FN_MAP[init_type]
+        self._population_size = population_size
         
+        self._init_function = INITIALIZATION_FN_MAP[init_type]
+        self._fitness_function = FITNESS_FN_MAP[fitness_type]
+        self._selection_function = SELECTION_FN_MAP[selection_type]
+
         self.population = self._init_function(n_tasks, population_size)
     
-    def step(self):
-        pass
+    def run(self, instance, max_generations=100) -> Chromosome:
+        """
+        Executes the algorithm for at least max_generations.
+
+        Args:
+            instance (_type_): Problem instance for which the
+                solution is desired.
+            max_generations (int, optional): The max number of
+                generations (loops). Defaults to 100.
+
+        Returns:
+            Chromosome: A Chromosome object, representing the
+                best solution found.
+        """
+
+        stop = False
+        offspring = []
+
+        while not stop:
+            stop = max_generations <= 0
+            max_generations -= 1
+            
+            # Fitness step
+            for p in self.population:
+                p.score = self._fitness_function(instance, p)
+
+            # Selection step
+            parents = self.population.copy()
+            if len(offspring) > 0:
+                self.population = self._selection_function(
+                        parents, offspring, self._population_size)
+            
+            # Crossover step
+            offspring = parents.copy()
+            
+            # Mutation step
+            
+            
+            
+            
+            
+            
+            
