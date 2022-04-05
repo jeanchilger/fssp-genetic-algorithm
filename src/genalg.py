@@ -27,7 +27,7 @@ class GeneticAlgorithm:
 
         self.population = self._init_function(n_tasks, population_size)
     
-    def run(self, instance, max_generations=100) -> Chromosome:
+    def run(self, instance, max_generations=300) -> Chromosome:
         """
         Executes the algorithm for at least max_generations.
 
@@ -35,7 +35,7 @@ class GeneticAlgorithm:
             instance (_type_): Problem instance for which the
                 solution is desired.
             max_generations (int, optional): The max number of
-                generations (loops). Defaults to 100.
+                generations (loops). Defaults to 300.
 
         Returns:
             Chromosome: A Chromosome object, representing the
@@ -59,28 +59,16 @@ class GeneticAlgorithm:
                 self.population = self._selection_function(
                         parents, offspring, self._population_size)
             
-            # print('\nSELECTION:')
-            # print(type(self.population))
-            # print(type(self.population[0]))
-            
             offspring = []
             
             ## Order population by fitness, to make pairs
             self.population = sorted(self.population, key=lambda x: x.score)
             
-            # print('\nSELECTION -> order:')
-            # print(type(self.population))
-            # print(type(self.population[0]))
-            
             # 3. Crossover step
             for i in range(0, len(self.population), 2):
                 offspring.extend(self._crossover_function(
                         self.population[i], self.population[i + 1]))
-            
-            # print('\nCROSSOVER -> offspring:')
-            # print(type(offspring))
-            # print(type(offspring[0]))
-            
+
             # 4. Mutation step
             offspring = list(map(self._mutation_function, offspring))
             # print('\nMUTATION -> offspring:')
