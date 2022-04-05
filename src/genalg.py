@@ -2,6 +2,7 @@ import numpy as np
 from .initialization import INITIALIZATION_FN_MAP
 from .fitness import FITNESS_FN_MAP
 from .selection import SELECTION_FN_MAP
+from .crossover import CROSSOVOER_FN_MAP
 from . import Chromosome
 
 
@@ -14,12 +15,13 @@ class GeneticAlgorithm:
     def __init__(
             self, n_tasks, population_size, init_type='random',
             fitness_type='makespan', selection_type='parent_elitism',
-            crossover_type=None, mutation_type=None):
+            crossover_type='partially_mapped', mutation_type=None):
         self._population_size = population_size
         
         self._init_function = INITIALIZATION_FN_MAP[init_type]
         self._fitness_function = FITNESS_FN_MAP[fitness_type]
         self._selection_function = SELECTION_FN_MAP[selection_type]
+        self._crossover_function = CROSSOVOER_FN_MAP[crossover_type]
 
         self.population = self._init_function(n_tasks, population_size)
     
@@ -56,7 +58,14 @@ class GeneticAlgorithm:
                         parents, offspring, self._population_size)
             
             # Crossover step
-            offspring = parents.copy()
+            offspring = None
+            p1 = [1, 2, 3, 4, 5, 6, 7]
+            p2 = [5, 4, 6, 7, 2, 1, 3]
+            of1, of2 = self._crossover_function(p1, p2)
+            print(of1)
+            print(of2)
+            print("========")
+            stop = True
             
             # Mutation step
             
