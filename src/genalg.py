@@ -3,6 +3,7 @@ from .initialization import INITIALIZATION_FN_MAP
 from .fitness import FITNESS_FN_MAP
 from .selection import SELECTION_FN_MAP
 from .crossover import CROSSOVOER_FN_MAP
+from .mutation import MUTATION_FN_MAP
 from . import Chromosome
 
 
@@ -15,13 +16,14 @@ class GeneticAlgorithm:
     def __init__(
             self, n_tasks, population_size, init_type='random',
             fitness_type='makespan', selection_type='parent_elitism',
-            crossover_type='partially_mapped', mutation_type=None):
+            crossover_type='partially_mapped', mutation_type='twors_mutation'):
         self._population_size = population_size
         
         self._init_function = INITIALIZATION_FN_MAP[init_type]
         self._fitness_function = FITNESS_FN_MAP[fitness_type]
         self._selection_function = SELECTION_FN_MAP[selection_type]
         self._crossover_function = CROSSOVOER_FN_MAP[crossover_type]
+        self._mutation_function = MUTATION_FN_MAP[mutation_type]
 
         self.population = self._init_function(n_tasks, population_size)
     
@@ -47,29 +49,43 @@ class GeneticAlgorithm:
             stop = max_generations <= 0
             max_generations -= 1
             
-            # Fitness step
+            # 1. Fitness step
             for p in self.population:
                 p.score = self._fitness_function(instance, p)
 
-            # Selection step
-            parents = self.population.copy()
+            # 2. Selection step
+            parents = self.population[:]
             if len(offspring) > 0:
                 self.population = self._selection_function(
                         parents, offspring, self._population_size)
             
-            # Crossover step
-            offspring = None
-            p1 = [1, 2, 3, 4, 5, 6, 7]
-            p2 = [5, 4, 6, 7, 2, 1, 3]
-            of1, of2 = self._crossover_function(p1, p2)
-            print(of1)
-            print(of2)
-            print("========")
-            stop = True
+            # print('\nSELECTION:')
+            # print(type(self.population))
+            # print(type(self.population[0]))
             
-            # Mutation step
+            offspring = []
             
+            ## Order population by fitness, to make pairs
+            self.population = sorted(self.population, key=lambda x: x.score)
             
+            # print('\nSELECTION -> order:')
+            # print(type(self.population))
+            # print(type(self.population[0]))
+            
+            # 3. Crossover step
+            for i in range(0, len(self.population), 2):
+                offspring.extend(self._crossover_function(
+                        self.population[i], self.population[i + 1]))
+            
+            # print('\nCROSSOVER -> offspring:')
+            # print(type(offspring))
+            # print(type(offspring[0]))
+            
+            # 4. Mutation step
+            offspring = list(map(self._mutation_function, offspring))
+            # print('\nMUTATION -> offspring:')
+            # print(type(offspring))
+            # print(type(offspring[0]))
             
             
             

@@ -1,3 +1,4 @@
+from pprint import pprint
 import numpy as np
 
 
@@ -29,7 +30,7 @@ def parent_elitism(
     best_parents = sorted(parents, key=lambda x: x.score)[:n_elites]
     best_offspring = sorted(offspring, key=lambda x: x.score)[:n_offspring]
     
-    return np.hstack([best_parents, best_offspring])
+    return best_parents + best_offspring
     
     
     

@@ -8,11 +8,12 @@ def main(args: argparse.Namespace) -> None:
     input_file = args.input_file
     
     ga = GeneticAlgorithm(20, 100)
-    # pprint([np.sum(a) for a in ga.population])
     
     instance = next(file.get_instance_from_file(input_file))
     
-    ga.run(instance, 2)
+    ga.run(instance, 100)
+    
+    pprint([p.score for p in ga.population])
     
     # for instance in file.get_instance_from_file(input_file):
     #     pprint(instance)
