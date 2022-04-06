@@ -18,7 +18,9 @@ def main(args: argparse.Namespace) -> None:
     n_tasks = int(re.findall(r'\d+', input_file.split('.')[0].split('_')[0])[0])
     
     for _ in tqdm(range(n_runs)):
-        ga = GeneticAlgorithm(n_tasks, population_size)
+        ga = GeneticAlgorithm(
+                n_tasks, population_size,
+                selection_type='only_elites')
         ga.run(instance, num_generations)
     
         scores.append(ga.population[0].score)

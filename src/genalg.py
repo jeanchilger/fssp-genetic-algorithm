@@ -6,12 +6,6 @@ from .crossover import CROSSOVOER_FN_MAP
 from .mutation import MUTATION_FN_MAP
 from . import Chromosome
 
-
-# - 1. Initialization
-# - 2. Fitness
-# - 3. Selection
-# - 4. Crossover
-# - 5. Mutation
 class GeneticAlgorithm:
     def __init__(
             self, n_tasks, population_size, init_type='random',
@@ -71,11 +65,3 @@ class GeneticAlgorithm:
 
             # 4. Mutation step
             offspring = list(map(self._mutation_function, offspring))
-            # print('\nMUTATION -> offspring:')
-            # print(type(offspring))
-            # print(type(offspring[0]))
-            
-            
-            
-            
-            
