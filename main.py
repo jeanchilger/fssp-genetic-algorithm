@@ -27,7 +27,7 @@ def main(args: argparse.Namespace) -> None:
         ga = GeneticAlgorithm(
                 n_tasks, population_size,
                 selection_type='parent_elitism')
-        ga.run(instance, num_generations)
+        ga.run(instance, num_generations, max_time=300)
     
         scores.append(ga.get_best_result().score)
         exec_times.append(ga.execution_time)
