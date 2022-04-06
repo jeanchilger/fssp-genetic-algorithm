@@ -22,6 +22,7 @@ class GeneticAlgorithm:
 
         self.population = self._init_function(n_tasks, population_size)
         self.execution_time = None
+        self.history = None
     
     def run(
             self, instance, max_generations: int=300,
@@ -44,10 +45,11 @@ class GeneticAlgorithm:
 
         offspring = []
         initial_time = time.time()
+        self.history = []
 
         while True:
             if time.time() - initial_time > max_time:
-                print('Stopping due to timout...')
+                print('Stopping due to timeout...')
                 break
             
             if max_generations <= 0:
@@ -65,6 +67,8 @@ class GeneticAlgorithm:
                 self.population = self._selection_function(
                         parents, offspring, self._population_size)
             
+            self.history.append(self.get_best_result().score)
+            
             offspring = []
             
             # 3. Crossover step
@@ -76,3 +80,9 @@ class GeneticAlgorithm:
             offspring = list(map(self._mutation_function, offspring))
         
         self.execution_time = time.time() - initial_time
+        
+    def get_best_result(self) -> Chromosome:
+        return sorted(self.population, key=lambda x: x.score)[0]
+    
+    def get_worst_result(self) -> Chromosome:
+        return sorted(self.population, key=lambda x: x.score)[-1]
