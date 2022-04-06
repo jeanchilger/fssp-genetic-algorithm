@@ -1,11 +1,28 @@
 import numpy as np
-from copy import deepcopy
-from pprint import pprint
+from typing import Sequence, Union
+from .. import Chromosome
 
 
-def partially_mapped(p1, p2):
-    cross_point_a = int(0.2 * len(p1))
-    cross_point_b = int(0.8 * len(p1))
+def partially_mapped(p1: Chromosome, p2: Chromosome) -> Sequence[Chromosome]:
+    """
+    Combines the provided chromosomes using the "Partially Mapped"
+    crossover strattegy (https://medium.com/geekculture/crossover-operators-in-ga-cffa77cdd0c8).
+    
+    This strategy is similar to the two-point crossover. The difference
+    relies on the creation of a map relation between the
+    transfered parts from the offsprings, which is used to fix
+    repeated values.
+
+    Args:
+        p1 (Chromosome): A individual selected to mating.
+        p2 (Chromosome): A individual selected to mating
+
+    Returns:
+        Sequence[Chromosome]: The resulting offsprings.
+    """
+    
+    cross_point_a = int(np.random.uniform(0, 0.3) * len(p1))
+    cross_point_b = int(np.random.uniform(0.5, 1) * len(p1))
     
     offspring1 = p1.copy()
     offspring2 = p2.copy()
@@ -27,27 +44,24 @@ def partially_mapped(p1, p2):
     offspring2[cross_point_b:] = np.array(list(map(
             lambda x: fix_map2.get(x, x), offspring2[cross_point_b:])))
     
-    # print()
-    # print(p1)
-    # print(p2)
-    # print(offspring1)
-    # print(offspring2)
-    # print('-' * 30)
-    # print(p1[cross_point_a:cross_point_b])
-    # print(p2[cross_point_a:cross_point_b])
-    # print('-' * 30)
-    # pprint(cross_point_a)
-    # pprint(cross_point_b)
-    # pprint(fix_map1)
-    # pprint(fix_map2)
-    # print("REPEATED?: ", not len(offspring1) == len(set(offspring1)))
-    # print()
-    # input()
-    
     return offspring1, offspring2
 
 
-def _get_maps(substr1, substr2):
+def _get_maps(
+        substr1: Union[list, np.ndarray],
+        substr2: Union[list, np.ndarray]) -> Sequence[dict]:
+    """
+    Return two mapping relationships between substr1 to substr2
+    and the reverse of that.
+
+    Args:
+        substr1 (Union[list, np.ndarray]): First substring.
+        substr2 (Union[list, np.ndarray]): Second substring.
+
+    Returns:
+        Sequence[dict]: Dicts, describing a map between both substrings.
+    """
+
     subs_map1 = {}
     subs_map2 = {}
     
@@ -63,7 +77,7 @@ def _get_maps(substr1, substr2):
                 subs_map1.pop(v)
                 normalized = False
                 break
-                
+        
     for k, v in list(subs_map1.items()):
         subs_map2[v] = k
     

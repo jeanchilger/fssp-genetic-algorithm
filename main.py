@@ -35,8 +35,12 @@ def main(args: argparse.Namespace) -> None:
 
     print(f'MEAN MAKESPAN: {statistics.mean(scores)}')
     print(f'STDEV MAKESPAN: {statistics.stdev(scores)}')
+    print(f'LOWER BOUND: {min(scores)}')
+    print(f'UPPER BOUND: {max(scores)}')
     print(f'MEAN EXEC TIME: {statistics.mean(exec_times)}')
     print(f'STDEV EXEC TIME: {statistics.stdev(exec_times)}')
+    
+    print([statistics.mean(scores), statistics.stdev(scores), min(scores), max(scores), statistics.mean(exec_times), statistics.stdev(exec_times)])
 
     _make_report(history, output_file)
 
