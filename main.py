@@ -6,6 +6,7 @@ from tqdm import tqdm
 from utils import file
 from src.genalg import GeneticAlgorithm
 
+
 def main(args: argparse.Namespace) -> None:
     input_file = args.input_file
     n_runs = args.n_runs
@@ -13,6 +14,7 @@ def main(args: argparse.Namespace) -> None:
     num_generations = args.num_generations
     
     scores = []
+    best_results = []
     
     instance = next(file.get_instance_from_file(input_file))
     n_tasks = int(re.findall(r'\d+', input_file.split('.')[0].split('_')[0])[0])
@@ -20,13 +22,21 @@ def main(args: argparse.Namespace) -> None:
     for _ in tqdm(range(n_runs)):
         ga = GeneticAlgorithm(
                 n_tasks, population_size,
-                selection_type='only_elites')
+                selection_type='parent_elitism')
         ga.run(instance, num_generations)
     
         scores.append(ga.population[0].score)
+        best_results.append()
 
     print(f'MEAN MAKESPAN: {statistics.mean(scores)}')
     print(f'STDEV MAKESPAN: {statistics.stdev(scores)}')
+
+
+def _make_report_entry(ga: GeneticAlgorithm) -> list:
+    
+    
+    [ga.population[0], ga.execution_time]
+    
 
 
 if __name__ == '__main__':

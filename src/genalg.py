@@ -1,4 +1,5 @@
 import numpy as np
+import time
 from .initialization import INITIALIZATION_FN_MAP
 from .fitness import FITNESS_FN_MAP
 from .selection import SELECTION_FN_MAP
@@ -20,8 +21,11 @@ class GeneticAlgorithm:
         self._mutation_function = MUTATION_FN_MAP[mutation_type]
 
         self.population = self._init_function(n_tasks, population_size)
+        self.execution_time = None
     
-    def run(self, instance, max_generations=300) -> Chromosome:
+    def run(
+            self, instance, max_generations: int=300,
+            max_time: int=330) -> Chromosome:
         """
         Executes the algorithm for at least max_generations.
 
@@ -30,17 +34,25 @@ class GeneticAlgorithm:
                 solution is desired.
             max_generations (int, optional): The max number of
                 generations (loops). Defaults to 300.
+            max_time (int, optional): The maximum amount of seconds
+                the loop should execute. Defaults to 330.
 
         Returns:
             Chromosome: A Chromosome object, representing the
                 best solution found.
         """
 
-        stop = False
         offspring = []
+        initial_time = time.time()
 
-        while not stop:
-            stop = max_generations <= 0
+        while True:
+            if time.time() - initial_time > max_time:
+                print('Stopping due to timout...')
+                break
+            
+            if max_generations <= 0:
+                break
+            
             max_generations -= 1
             
             # 1. Fitness step
@@ -55,9 +67,6 @@ class GeneticAlgorithm:
             
             offspring = []
             
-            ## Order population by fitness, to make pairs
-            self.population = sorted(self.population, key=lambda x: x.score)
-            
             # 3. Crossover step
             for i in range(0, len(self.population), 2):
                 offspring.extend(self._crossover_function(
@@ -65,3 +74,5 @@ class GeneticAlgorithm:
 
             # 4. Mutation step
             offspring = list(map(self._mutation_function, offspring))
+        
+        self.execution_time = time.time() - initial_time
